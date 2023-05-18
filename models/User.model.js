@@ -5,19 +5,32 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: [true, 'Email is required.'],
+      required: [true, "Email is required."],
       unique: true,
-      lowercase: true,
-      trim: true
     },
     password: {
       type: String,
-      required: [true, 'Password is required.']
-    }
+      required: [true, "Password is required."],
+    },
+    username: {
+      type: String,
+      required: [true, "Username is required."],
+    },
+    picture: {
+      type: String,
+    },
+    placesBeen: {
+      type: [Schema.Types.ObjectId],
+      ref: "Place",
+    },
+    placesVisit: {
+      type: [Schema.Types.ObjectId],
+      ref: "Place",
+    },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`    
-    timestamps: true
+    // this second object adds extra properties: `createdAt` and `updatedAt`
+    timestamps: true,
   }
 );
 
