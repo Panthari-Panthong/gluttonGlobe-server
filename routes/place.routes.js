@@ -10,4 +10,10 @@ router.get("/places", async (req, res, next) => {
   }
 });
 
+router.get("/places/:id", (req, res, next) => {
+  Place.findById(req.params.id)
+    .then((place) => res.status(200).json(place))
+    .catch((error) => res.json(error));
+});
+
 module.exports = router;
