@@ -2,14 +2,23 @@ const { Schema, model } = require("mongoose");
 
 const placeSchema = new Schema(
   {
-    name: {
+    city: {
       type: String,
     },
-    address: {
+    lat: {
+      type: Number,
+    },
+    lng: {
+      type: Number,
+    },
+    country: {
       type: String,
     },
-    map: {
+    iso3: {
       type: String,
+    },
+    population: {
+      type: Number,
     },
     post: {
       type: [Schema.Types.ObjectId],
