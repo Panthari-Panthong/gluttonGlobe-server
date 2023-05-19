@@ -5,8 +5,6 @@ const User = require("../models/User.model");
 
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
 
-const saltRounds = 10;
-
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", async (req, res, next) => {
   const { email, password, username } = req.body;
@@ -24,6 +22,16 @@ router.post("/signup", async (req, res, next) => {
     return;
   }
 
+  // Use regex to validate the password format
+  const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+  if (!passwordRegex.test(password)) {
+    res.status(400).json({
+      message:
+        "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+    });
+    return;
+  }
+
   try {
     // Check the users collection if a user with the same email already exists
     const foundUser = await User.findOne({ email });
@@ -34,11 +42,11 @@ router.post("/signup", async (req, res, next) => {
     }
 
     // If the email is unique, proceed to hash the password
+    const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
     // Create a new user in the database
-    // We return a pending promise, which allows us to chain another `then`
     const createdUser = await User.create({
       email,
       password: hashedPassword,
@@ -55,40 +63,38 @@ router.post("/signup", async (req, res, next) => {
 router.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
 
+  // Check if email or password are provided as empty string
   if (email === "" || password === "") {
     res.status(400).json({ message: "Provide email and password." });
     return;
   }
-
   try {
-    /* Try to get your user from the DB */
+    // Check the users collection if a user with the same email exists
     const foundUser = await User.findOne({ email });
 
-    /* If your user exists, check if the password is correct */
     if (!foundUser) {
       // If the user is not found, send an error response
       res.status(401).json({ message: "User not found." });
       return;
     }
 
-    /* If your password is correct, sign the JWT using jsonwebtoken */
+    // Compare the provided password with the one saved in the database
     const passwordCorrect = bcrypt.compareSync(password, foundUser.password);
 
     if (passwordCorrect) {
+      // Deconstruct the user object to omit the password
       const { _id, email, name } = foundUser;
+
+      // Create an object that will be set as the token payload
       const payload = { _id, email, name };
 
-      const authToken = jwt.sign(
-        {
-          expiresIn: "6h",
-          user: payload, // Put yhe data of your user in there
-        },
-        process.env.TOKEN_SECRET,
-        {
-          algorithm: "HS256",
-        }
-      );
+      // Create and sign the token
+      const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+        algorithm: "HS256",
+        expiresIn: "6h",
+      });
 
+      // Send the token as the response
       res.status(200).json({ authToken: authToken });
     } else {
       res.status(401).json({ message: "Unable to authenticate the user" });
