@@ -115,4 +115,26 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+router.get("/profile/:userId", async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await User.findById(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.get("/profile/:userId/edit", async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await User.findById(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
