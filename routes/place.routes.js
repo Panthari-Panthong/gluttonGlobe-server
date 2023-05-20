@@ -20,7 +20,7 @@ router.get("/places/:userId", async (req, res) => {
 
   try {
     const ObjectId = mongoose.Types.ObjectId;
-    const placesBeenFromUser = await User.aggregate([
+    const placesFromUser = await User.aggregate([
       { $match: { _id: new ObjectId(userId) } },
       {
         $lookup: {
@@ -31,21 +31,6 @@ router.get("/places/:userId", async (req, res) => {
         },
       },
       {
-        $unwind: "$placesBeenFromUser",
-      },
-      {
-        $project: {
-          _id: 0,
-          city: "$placesBeenFromUser.city",
-          lat: "$placesBeenFromUser.lat",
-          lng: "$placesBeenFromUser.lng",
-        },
-      },
-    ]);
-
-    const placesVisitFromUser = await User.aggregate([
-      { $match: { _id: new ObjectId(userId) } },
-      {
         $lookup: {
           from: "places",
           as: "placesVisitFromUser",
@@ -54,21 +39,14 @@ router.get("/places/:userId", async (req, res) => {
         },
       },
       {
-        $unwind: "$placesVisitFromUser",
-      },
-      {
         $project: {
           _id: 0,
-          city: "$placesVisitFromUser.city",
-          lat: "$placesVisitFromUser.lat",
-          lng: "$placesVisitFromUser.lng",
+          placesBeenFromUser: "$placesBeenFromUser",
+          placesVisitFromUser: "$placesVisitFromUser",
         },
       },
     ]);
-
-    res.status(200).json({ placesBeenFromUser, placesVisitFromUser });
-
-    //res.send({ data: savedPlaces });
+    res.status(200).json({ placesFromUser });
   } catch (error) {
     console.log(error);
     res
