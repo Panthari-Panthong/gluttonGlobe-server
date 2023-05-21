@@ -55,4 +55,10 @@ router.get("/places/:userId", async (req, res) => {
   }
 });
 
+router.post("/places/:id", (req, res) => {
+  Place.findById(req.params.id)
+    .then((place) => res.status(200).json(place))
+    .catch((error) => res.json(error));
+});
+
 module.exports = router;
