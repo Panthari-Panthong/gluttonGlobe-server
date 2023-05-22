@@ -1,7 +1,7 @@
 const router = require("express").Router();
 // Implment isAuthenticated when the test is done
 //const { isAuthenticated } = require("../middleware/jwt.middleware");
-const User = require("../models/User.Model");
+const User = require("../models/User.model");
 const Place = require("../models/Place.Model");
 const mongoose = require("mongoose");
 
@@ -53,12 +53,6 @@ router.get("/places/:userId", async (req, res) => {
       .status(500)
       .json({ message: "Error fetching places saved by the users" });
   }
-});
-
-router.post("/places/:id", (req, res) => {
-  Place.findById(req.params.id)
-    .then((place) => res.status(200).json(place))
-    .catch((error) => res.json(error));
 });
 
 module.exports = router;
