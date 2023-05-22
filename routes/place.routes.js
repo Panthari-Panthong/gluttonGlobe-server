@@ -21,7 +21,7 @@ router.get("/places/:id", (req, res, next) => {
 router.post("/places/:id", (req, res, next) => {
   const { comment } = req.body;
 
-  Post.create({ comment, place: req.params.id }) // + user to add if logged in
+  Post.create({ user, comment, place: req.params.id })
     .then((newPost) => {
       return Place.findByIdAndUpdate(req.params.id, {
         $push: { post: newPost._id },
