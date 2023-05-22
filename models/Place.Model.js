@@ -14,7 +14,7 @@ const placeSchema = new Schema(
     country: {
       type: String,
     },
-    iso3: {
+    iso2: {
       type: String,
     },
     population: {
