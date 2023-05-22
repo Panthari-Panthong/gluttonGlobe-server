@@ -2,8 +2,12 @@ const router = require("express").Router();
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User.model");
+const Place = require("../models/Place.Model");
 
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
+
+// ********* require fileUploader in order to use it *********
+const fileUploader = require("../config/cloudinary.config");
 
 // POST /auth/signup  - Creates a new user in the database
 router.post("/signup", async (req, res, next) => {
@@ -54,7 +58,7 @@ router.post("/signup", async (req, res, next) => {
     });
 
     // Send a json response containing the user object
-    res.status(201).json({ message: "User create" });
+    res.status(201).json({ message: "New user created" });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -113,6 +117,56 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   // Send back the object with user data
   // previously set as the token payload
   res.status(200).json(req.payload);
+});
+
+// Cloudinary uploaded
+router.post("/upload", fileUploader.single("imageUrl"), (req, res, next) => {
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+
+  // Get the URL of the uploaded file and send it as a response.
+  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+  res.json({ fileUrl: req.file.path });
+});
+
+// GET  /auth/profile/:userId  -  Used to verify JWT stored on the client
+router.get("/profile/:userId", isAuthenticated, async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await User.findById(userId)
+      .populate("placesBeen")
+      .populate("placesVisit");
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.get("/profile/:userId/edit", isAuthenticated, async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await User.findById(userId);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.put("/profile/:userId/edit", isAuthenticated, async (req, res, next) => {
+  const { userId } = req.params;
+
+  try {
+    const response = await User.findByIdAndUpdate(userId, req.body, {
+      new: true,
+    });
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
 });
 
 module.exports = router;
