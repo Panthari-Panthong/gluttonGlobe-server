@@ -84,6 +84,7 @@ router.patch("/places/addtoVisit/:userId", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+});
 
 router.get("/places/:id", (req, res, next) => {
   Place.findById(req.params.id)
@@ -103,7 +104,6 @@ router.post("/places/:id", (req, res, next) => {
     })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
-
 });
 
 module.exports = router;
