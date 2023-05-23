@@ -1,6 +1,5 @@
 const router = require("express").Router();
-// Implment isAuthenticated when the test is done
-//const { isAuthenticated } = require("../middleware/jwt.middleware");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 const User = require("../models/User.model");
 const Place = require("../models/Place.Model");
 const mongoose = require("mongoose");
@@ -93,10 +92,10 @@ router.get("/places/:id", (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
-router.post("/places/:id", (req, res, next) => {
+router.post("/places/:id", isAuthenticated, (req, res, next) => {
   const { comment } = req.body;
 
-  Post.create({ comment, place: req.params.id }) // + user to add if logged in
+  Post.create({ user: payload, comment, place: req.params.id })
     .then((newPost) => {
       return Place.findByIdAndUpdate(req.params.id, {
         $push: { post: newPost._id },
