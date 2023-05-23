@@ -158,11 +158,20 @@ router.get("/profile/:userId/edit", isAuthenticated, async (req, res, next) => {
 
 router.put("/profile/:userId/edit", isAuthenticated, async (req, res, next) => {
   const { userId } = req.params;
-
+  const { about, picture, username } = req.body;
   try {
-    const response = await User.findByIdAndUpdate(userId, req.body, {
-      new: true,
-    });
+    const response = await User.findByIdAndUpdate(
+      userId,
+      {
+        ...req.body,
+        about,
+        picture,
+        username,
+      },
+      {
+        new: true,
+      }
+    );
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
