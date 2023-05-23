@@ -18,6 +18,12 @@ const userSchema = new Schema(
     },
     picture: {
       type: String,
+      default:
+        "https://res.cloudinary.com/dkzhxg8ci/image/upload/v1684507275/User-avatar_kjsqw4.png",
+    },
+    about: {
+      type: String,
+      default: "About me...",
     },
     placesBeen: {
       type: [Schema.Types.ObjectId],
