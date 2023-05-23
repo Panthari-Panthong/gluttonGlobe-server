@@ -55,4 +55,34 @@ router.get("/places/:userId", async (req, res) => {
   }
 });
 
+router.patch("/places/addtoBeen/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { placesBeen } = req.body; // Id of the place
+  try {
+    const updatedUserInfo = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { placesBeen: placesBeen._id } },
+      { new: true }
+    );
+    res.status(200).json({ updatedUserInfo });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+router.patch("/places/addtoVisit/:userId", async (req, res) => {
+  const userId = req.params.userId;
+  const { placesVisit } = req.body; // Id of the place
+  try {
+    const updatedUserInfo = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { placesVisit: placesVisit._id } },
+      { new: true }
+    );
+    res.status(200).json({ updatedUserInfo });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 module.exports = router;
