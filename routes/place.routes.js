@@ -16,7 +16,7 @@ router.get("/places", async (req, res, next) => {
 });
 
 // Route to fetch places saved by the user
-router.get("/places/:userId", async (req, res) => {
+router.get("/mymap/:userId", async (req, res) => {
   const userId = req.params.userId;
 
   try {
@@ -56,7 +56,7 @@ router.get("/places/:userId", async (req, res) => {
   }
 });
 
-router.patch("/places/addtoBeen/:userId", async (req, res) => {
+router.patch("/mymap/addtoBeen/:userId", async (req, res) => {
   const userId = req.params.userId;
   const { placesBeen } = req.body; // Id of the place
   try {
@@ -71,7 +71,7 @@ router.patch("/places/addtoBeen/:userId", async (req, res) => {
   }
 });
 
-router.patch("/places/addtoVisit/:userId", async (req, res) => {
+router.patch("/mymap/addtoVisit/:userId", async (req, res) => {
   const userId = req.params.userId;
   const { placesVisit } = req.body; // Id of the place
   try {
