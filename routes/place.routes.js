@@ -164,6 +164,45 @@ router.put("/mymap/updateVisit/:userId", isAuthenticated, async (req, res) => {
   }
 });
 
+/* --- PUT: Route to remove the places from the user --- */
+// router.put("/mymap/removePlace/:userId", isAuthenticated, async (req, res) => {
+//   const userId = req.params.userId;
+//   const { placeToRemove } = req.body; // Id of the place
+
+//   try {
+//     // Find the user
+//     const user = await User.findById(userId);
+
+//     // Checks on the place is already existed in placeBeen
+//     if (user.placesBeen.includes(placeToRemove._id)) {
+//       const updatedUser = await User.findByIdAndUpdate(
+//         userId,
+//         { $pull: { placeBeen: placeToRemove._id } },
+//         {
+//           new: true, // Returns the updated document
+//           runValidators: true, // Runs Mongoose validators on the update
+//         }
+//       );
+//       res.status(200).json({ updatedUser });
+//     }
+
+//     // Checks on the place is already existed in placeVisit
+//     if (user.placesVisit.includes(placeToRemove._id)) {
+//       const updatedUser = await User.findByIdAndUpdate(
+//         userId,
+//         { $pull: { placesVisit: placeToRemove._id } },
+//         {
+//           new: true, // Returns the updated document
+//           runValidators: true, // Runs Mongoose validators on the update
+//         }
+//       );
+//       res.status(200).json({ updatedUser });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
 //  Route to get one place's details
 router.get("/places/:id", (req, res, next) => {
   Place.findById(req.params.id)
