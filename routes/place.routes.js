@@ -203,24 +203,12 @@ router.put("/mymap/updateVisit/:userId", isAuthenticated, async (req, res) => {
 //   }
 // });
 
+//  Route to get one place's details
 router.get("/places/:id", (req, res, next) => {
   Place.findById(req.params.id)
     .populate("post")
     .then((place) => res.status(200).json(place))
     .catch((error) => res.json(error));
-});
-
-router.post("/places/:id", isAuthenticated, (req, res, next) => {
-  const { comment } = req.body;
-
-  Post.create({ user: payload, comment, place: req.params.id })
-    .then((newPost) => {
-      return Place.findByIdAndUpdate(req.params.id, {
-        $push: { post: newPost._id },
-      });
-    })
-    .then((response) => res.json(response))
-    .catch((err) => res.json(err));
 });
 
 module.exports = router;
