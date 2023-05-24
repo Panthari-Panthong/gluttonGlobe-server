@@ -33,6 +33,10 @@ const userSchema = new Schema(
       type: [Schema.Types.ObjectId],
       ref: "Place",
     },
+    posts: {
+      type: [Schema.Types.ObjectId],
+      ref: "Post",
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
