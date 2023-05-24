@@ -172,18 +172,4 @@ router.get("/places/:id", (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
-// Route to create a post on a place's detail page
-router.post("/places/:id", isAuthenticated, (req, res, next) => {
-  const { comment } = req.body;
-
-  Post.create({ user: payload, comment, place: req.params.id })
-    .then((newPost) => {
-      Place.findByIdAndUpdate(req.params.id, {
-        $push: { post: newPost._id },
-      });
-    })
-    .then((response) => res.status(200).json(response))
-    .catch((err) => res.json(err));
-});
-
 module.exports = router;
