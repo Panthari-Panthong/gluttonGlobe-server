@@ -92,17 +92,4 @@ router.get("/places/:id", (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
-router.post("/places/:id", isAuthenticated, (req, res, next) => {
-  const { comment } = req.body;
-
-  Post.create({ user: payload, comment, place: req.params.id })
-    .then((newPost) => {
-      return Place.findByIdAndUpdate(req.params.id, {
-        $push: { post: newPost._id },
-      });
-    })
-    .then((response) => res.json(response))
-    .catch((err) => res.json(err));
-});
-
 module.exports = router;
